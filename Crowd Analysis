@@ -1,0 +1,290 @@
+CSRNet: Congested Scene Recognition Network
+
+The purpose of this notebook is to train a CSRNet with the help of GPU instances.
+CSRNet: Congested Scene Recognition Network
+from google.colab import drive
+drive.mount('/content/drive')
+Mounted at /content/drive
+'
+/content
+'
+%pwd
+%cd /content/drive
+/content/drive
+%cd 'MyDrive'
+/content/drive/MyDrive
+%cd 'crowd_analysis'
+/content/drive/MyDrive/crowd_analysis
+!pip install PyDrive -qq
+import os
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
+from google.colab import auth
+from oauth2client.client import GoogleCredentials
+auth.authenticate_user()
+gauth = GoogleAuth()
+gauth.credentials = GoogleCredentials.get_application_default()
+drive = GoogleDrive(gauth)
+%tensorflow_version 2.x
+import tensorflow as tf
+device_name = tf.test.gpu_device_name()
+if device_name != '/device:GPU:0':
+7/25/22, 9:51 PM Crowd_Analysis.ipynb - Colaboratory
+https://colab.research.google.com/drive/1XezkebxVUHhTAcmxlZdLsE5GDmhajUmj#scrollTo=pzlzY2Mz1aRz&printMode=true 2/8
+raise SystemError('GPU device not found')
+print('Found GPU at: {}'.format(device_name))
+Found GPU at: /device:GPU:0
+Density map generation
+import time
+start_time = time.time()
+!python make_dataset.py Shanghai/ Shanghai_A
+end_time = time.time()
+print('Density map generation took {:0.2f} secs'.format(end_time - start_time))
+INFO:root:Creating Shanghai/part_A_final/train_data/densities directory
+INFO:root:Processed 0 images
+INFO:root:Processed 100 images
+INFO:root:Processed 200 images
+INFO:root:Creating Shanghai/part_A_final/test_data/densities directory
+INFO:root:Processed 0 images
+INFO:root:Processed 100 images
+Density map generation took 8571.94 secs
+!python train.py part_A/train_val.json part_A/test.json
+INFO:root:Using cuda:0 device for training
+INFO:root:Building model
+Downloading: "https://download.pytorch.org/models/vgg16-397923af.pth" to /root/.cach
+100% 528M/528M [00:19<00:00, 27.7MB/s]
+INFO:root:Training model
+INFO:root:Epoch [0/400] (0/240) Time = 0.53, Total time = 0.53 Current loss = 76.410
+INFO:root:Epoch [0/400] (100/240) Time = 0.01, Total time = 1.01 Current loss = 474.
+INFO:root:Epoch [0/400] (200/240) Time = 0.00, Total time = 1.48 Current loss = 36.5
+INFO:root:Evaluating model...
+INFO:root:Mean average Error (MAE) = 270.1038
+INFO:root:Checkpoint created
+INFO:root:Saving loss data in data/loss_data.json
+INFO:root:Epoch [1/400] (0/240) Time = 0.00, Total time = 0.00 Current loss = 72.958
+INFO:root:Epoch [1/400] (100/240) Time = 0.00, Total time = 0.35 Current loss = 130.
+INFO:root:Epoch [1/400] (200/240) Time = 0.00, Total time = 0.68 Current loss = 1204
+INFO:root:Evaluating model...
+INFO:root:Mean average Error (MAE) = 443.6697
+INFO:root:Saving loss data in data/loss_data.json
+INFO:root:Epoch [2/400] (0/240) Time = 0.00, Total time = 0.00 Current loss = 122.77
+INFO:root:Epoch [2/400] (100/240) Time = 0.00, Total time = 0.36 Current loss = 89.2
+INFO:root:Epoch [2/400] (200/240) Time = 0.00, Total time = 0.70 Current loss = 300.
+INFO:root:Evaluating model...
+INFO:root:Mean average Error (MAE) = 247.2685
+INFO:root:Checkpoint created
+INFO:root:Saving loss data in data/loss_data.json
+INFO:root:Epoch [3/400] (0/240) Time = 0.00, Total time = 0.00 Current loss = 49.133
+INFO:root:Epoch [3/400] (100/240) Time = 0.00, Total time = 0.36 Current loss = 9.48
+INFO:root:Epoch [3/400] (200/240) Time = 0.00, Total time = 0.70 Current loss = 84.6
+7/25/22, 9:51 PM Crowd_Analysis.ipynb - Colaboratory
+https://colab.research.google.com/drive/1XezkebxVUHhTAcmxlZdLsE5GDmhajUmj#scrollTo=pzlzY2Mz1aRz&printMode=true 3/8
+INFO:root:Evaluating model...
+INFO:root:Mean average Error (MAE) = 246.8061
+INFO:root:Checkpoint created
+INFO:root:Saving loss data in data/loss_data.json
+INFO:root:Epoch [4/400] (0/240) Time = 0.00, Total time = 0.00 Current loss = 11.309
+INFO:root:Epoch [4/400] (100/240) Time = 0.00, Total time = 0.36 Current loss = 135.
+INFO:root:Epoch [4/400] (200/240) Time = 0.00, Total time = 0.69 Current loss = 537.
+INFO:root:Evaluating model...
+INFO:root:Mean average Error (MAE) = 399.0708
+INFO:root:Saving loss data in data/loss_data.json
+INFO:root:Epoch [5/400] (0/240) Time = 0.00, Total time = 0.00 Current loss = 52.038
+INFO:root:Epoch [5/400] (100/240) Time = 0.00, Total time = 0.33 Current loss = 76.3
+INFO:root:Epoch [5/400] (200/240) Time = 0.00, Total time = 0.67 Current loss = 73.7
+INFO:root:Evaluating model...
+INFO:root:Mean average Error (MAE) = 473.9541
+INFO:root:Saving loss data in data/loss_data.json
+INFO:root:Epoch [6/400] (0/240) Time = 0.00, Total time = 0.00 Current loss = 84.994
+INFO:root:Epoch [6/400] (100/240) Time = 0.00, Total time = 0.34 Current loss = 1355
+INFO:root:Epoch [6/400] (200/240) Time = 0.00, Total time = 0.67 Current loss = 195.
+INFO:root:Evaluating model...
+INFO:root:Mean average Error (MAE) = 237.6891
+INFO:root:Checkpoint created
+INFO:root:Saving loss data in data/loss_data.json
+INFO:root:Epoch [7/400] (0/240) Time = 0.00, Total time = 0.00 Current loss = 64.655
+INFO:root:Epoch [7/400] (100/240) Time = 0.00, Total time = 0.36 Current loss = 112.
+INFO:root:Epoch [7/400] (200/240) Time = 0.00, Total time = 0.71 Current loss = 263.
+INFO:root:Evaluating model...
+INFO:root:Mean average Error (MAE) = 308.9970
+Model tests
+import torch
+import os
+device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+CKPT_DIR = 'ckpts'
+models = []
+for model_fn in os.listdir(CKPT_DIR):
+if model_fn == 'model.pth.tar':
+continue
+model_path = os.path.join(CKPT_DIR, model_fn)
+ckpt = torch.load(model_path, map_location=torch.device(device))
+models.append((model_path, ckpt['loss']))
+models = sorted(models, key=lambda loss: loss[1], reverse=False)
+print(len(models))
+model_path = models[0][0]
+print(model_path)
+7/25/22, 9:51 PM Crowd_Analysis.ipynb - Colaboratory
+https://colab.research.google.com/drive/1XezkebxVUHhTAcmxlZdLsE5GDmhajUmj#scrollTo=pzlzY2Mz1aRz&printMode=true 4/8
+20
+ckpts/model-77.20.pth.tar
+!python validation.py $model_path part_A/test.json
+INFO:root:Evaluating using cuda:0 device
+INFO:root:Evaluating on 182 images
+INFO:root:Building model
+INFO:root:Starting evaluation
+INFO:root:Image:0:Error:2.1704:SquaredError:4.7107 MAE = 2.1704 MSE = 2.1704
+INFO:root:Image:100:Error:63.3083:SquaredError:4007.9470 MAE = 79.2679 MSE = 1
+INFO:root:Metrics saved in data/metrics.json
+import json
+with open('data/metrics.json') as infile:
+data = json.load(infile)
+data
+{'mae': 77.1950877891792,
+ 'mse': 129.30542618198805,
+ 'ssim': 0.7120641445035744}
+# Last epoch did not necessarily yield best model
+# Fix data according to that
+ckpt = torch.load(model_path, map_location=torch.device(device))
+last_epoch = ckpt['epoch']
+with open('data/loss_data.json') as infile:
+loss = json.load(infile)
+last_ckpt_loss_data = {'train_mae': loss['train_mae'][:last_epoch], 'val_mae': loss['val_mae'
+with open('data/loss_data.json', 'w') as outfile:
+json.dump(last_ckpt_loss_data, outfile)
+import torch
+import matplotlib.cm as cm
+import cv2
+import h5py
+from torchvision import transforms
+from utils.dataset import Shanghai_A
+from utils.model import CSRNet
+from utils.augmentation import create_dataloader
+import numpy as np
+def estimate_density_map(img,model_param_path):
+7/25/22, 9:51 PM Crowd_Analysis.ipynb - Colaboratory
+https://colab.research.google.com/drive/1XezkebxVUHhTAcmxlZdLsE5GDmhajUmj#scrollTo=pzlzY2Mz1aRz&printMode=true 5/8
+device=torch.device("cuda")
+model=CSRNet().to(device)
+checkpoint = torch.load(model_param_path)
+model.load_state_dict(checkpoint['state_dict'])
+#print(model.eval())
+preprocessing = transforms.Compose([transforms.ToTensor(),
+transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
+img_tr = preprocessing(img)
+et_dmap = model(img_tr.cuda()).detach()
+#max_values = []
+et_dmap = et_dmap.squeeze(0).squeeze(0).cpu().numpy()
+return et_dmap
+def get_video_frames(video_path):
+cap = cv2.VideoCapture(video_path)
+frames = []
+while (cap.isOpened()):
+ret, frame = cap.read()
+if ret == True:
+frames.append(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+else:
+break
+return frames
+import matplotlib.pyplot as plt
+import pandas as pd
+from matplotlib.animation import FuncAnimation, PillowWriter
+import networkx as nx
+from matplotlib import animation
+def visualize_predictions(count, max_value):
+fig, ax = plt.subplots()
+x=[]
+y=[]
+def update(i):
+if not (i>=len(count)):
+x.append(count[i])
+y.append(max_value[i])
+plt.cla()
+plt.plot(x, y)
+plt.xlabel("Time")
+plt.ylabel("Normalized Density")
+plt.tight_layout()
+# FuncAnimation will call the 'update' function for each frame; here
+# animating over 10 frames, with an interval of 20ms between frames.
+anim = FuncAnimation(fig, update,interval = 1000)
+7/25/22, 9:51 PM Crowd_Analysis.ipynb - Colaboratory
+https://colab.research.google.com/drive/1XezkebxVUHhTAcmxlZdLsE5GDmhajUmj#scrollTo=pzlzY2Mz1aRz&printMode=true 6/8
+writervideo = animation.FFMpegWriter(fps=10)
+anim.save('./data/graph.mp4', writer=writervideo)
+return 0
+import yagmail
+from datetime import datetime
+import pytz
+def send_mail(camera):
+tz_NY = pytz.timezone('Asia/Kolkata')
+now = datetime.now(tz_NY)
+current_time = now.strftime("%H:%M:%S")
+host = 'smtp.gmail.com'
+port = 465
+user = 'analysiscrowd@gmail.com'
+app_password = 'ykwvamvmuzcegdhu' # a token for gmail
+to = 'arpitabhat16@gmail.com'
+subject = 'Crowd Density Exceeded!'
+content = ["camera : " + str(camera), "time : " + current_time]
+with yagmail.SMTP(user, app_password, host, port) as yag:
+yag.send(to, subject, content)
+print('Sent email successfully')
+return 0
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt2
+import csv
+import time
+cap = cv2.VideoCapture(r"/content/drive/MyDrive/crowd_analysis/video3.mp4")
+codec = cv2.VideoWriter_fourcc(*'XVID')
+vid_fps =int(cap.get(cv2.CAP_PROP_FPS))
+out = cv2.VideoWriter('./data/results2.avi', codec, vid_fps, (135,76))
+cam =1
+cnt = list(range(0,101))
+max_value = []
+c = 0
+flag = 0
+while True:
+_,img = cap.read()
+c+=1
+if img is None or c>100:
+7/25/22, 9:51 PM Crowd_Analysis.ipynb - Colaboratory
+https://colab.research.google.com/drive/1XezkebxVUHhTAcmxlZdLsE5GDmhajUmj#scrollTo=pzlzY2Mz1aRz&printMode=true 7/8
+g
+print('Completed')
+break
+d = estimate_density_map(img,"/content/drive/MyDrive/crowd_analysis/ckpts/model-77.20.pth
+max_value.append(np.amax(d))
+print(np.amax(d))
+if(np.amax(d)>0.9 and flag==0):
+flag = 1
+send_mail(cam)
+print("mail sent")
+time.sleep(1)
+frame = np.uint8(255 * d)
+print(np.amax(d))
+d_col = cv2.applyColorMap(frame,cv2.COLORMAP_JET)
+out.write(d_col)
+visualize_predictions(cnt, max_value)
+cap.release()
+out.release()
+pip install yagmail
+Looking in indexes: https://pypi.org/simple, https://us-python.pkg.dev/colab-wheels/pub
+Collecting yagmail
+ Downloading yagmail-0.15.280-py2.py3-none-any.whl (17 kB)
+Collecting premailer
+ Downloading premailer-3.10.0-py2.py3-none-any.whl (19 kB)
+Collecting cssselect
+ Downloading cssselect-1.1.0-py2.py3-none-any.whl (16 kB)
+Collecting cssutils
+ Downloading cssutils-2.5.1-py3-none-any.whl (399 kB)
+ |████████████████████████████████| 399 kB 9.0 MB/s 
+Requirement already satisfied: lxml in /usr/local/lib/python3.7/dist-packages (from pre
+Requirement already satisfied: requests in /usr/local/lib/python3.7/dist-packages (from
+Requirement already satisfied: cachetools in /usr/local/lib/python3.7/dist-packages (fr
+Requirement already satisfied: importlib-metadata in /usr/local/lib/python3.7/dist-pack
+Requirement already satisfied: zipp>=0.5 in /usr/local/lib/python3.7/dist-packages (fro
+Requirement already satisfied: typing-extensions>=3.6.4 in /usr/local/lib/python3.7/dis
+Requirement already satisfied: chardet<4,>=3.0.2 in /usr/local/lib/python3.7/dist-packa
+Requirement already satisfied: idna<3,>=2.5 in /usr/local/lib/python3.7/dist-packages (
+Requirement already satisfied: urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 in /usr/local/li
+Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.7/dist-pack
